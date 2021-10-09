@@ -84,7 +84,7 @@ params:
       - image: lbs.jpg
         subtitle: Short Biography
         title: About me
-        url: risk_return
+        url: blogs/risk_return
       - image: pic02.jpg
         subtitle: Feugiat Amet Tempus
         title: Tempusg
