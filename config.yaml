@@ -81,13 +81,13 @@ params:
   tiles:
     enable: yes
     showcase:
-      - image: pic01.jpg
-        subtitle: Ipsum Dolor Sit Amet
-        title: Aliquam
-        url: blogs/aliquam
+      - image: lbs.jpg
+        subtitle: Short Biography
+        title: About me
+        url: risk_return
       - image: pic02.jpg
         subtitle: Feugiat Amet Tempus
-        title: Tempus
+        title: Tempusg
         url: blogs/tempus
       - image: pic03.jpg
         subtitle: Lorem Etiam Nullam
