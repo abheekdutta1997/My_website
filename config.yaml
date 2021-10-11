@@ -82,7 +82,7 @@ params:
     enable: yes
     showcase:
       - image: lbs.jpg
-        subtitle: Short Biography
+        subtitle: An LBS student
         title: About me
         url: blogs/risk_return
       - image: pic02.jpg
