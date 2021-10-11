@@ -84,26 +84,26 @@ params:
       - image: lbs.jpg
         subtitle: An LBS student
         title: About me
-        url: blogs/risk_return
+        url: blogs/About me
       - image: pic02.jpg
         subtitle: Feugiat Amet Tempus
-        title: Tempusg
+        title: My Favourite Holiday Destination
         url: blogs/tempus
       - image: pic03.jpg
         subtitle: Lorem Etiam Nullam
-        title: Magna
+        title: Sports
         url: blogs/magna
       - image: pic04.jpg
         subtitle: Nisl Sed Aliquam
-        title: Ipsum
+        title: Nationality and Ancestry
         url: blogs/ipsum
       - image: pic05.jpg
         subtitle: Ipsum Dolor Sit Amet
-        title: Consequat
+        title: Music
         url: blogs/ipsum
       - image: pic06.jpg
         subtitle: Feugiat Amet Tempus
-        title: Etiam
+        title: Some R data
         url: blogs/ipsum
   two:
     buttonText: Get Started
