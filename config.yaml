@@ -88,23 +88,23 @@ params:
       - image: pic02.jpg
         subtitle: Best thing I've seen in my life
         title: My Favourite Holiday Destination
-        url: blogs/tempus
+        url: blogs/Holidays
       - image: pic03.jpg
         subtitle: The best pass-time
         title: Sports
-        url: blogs/magna
+        url: blogs/Sports
       - image: pic04.jpg
         subtitle: Heritage
         title: Nationality and Ancestry
-        url: blogs/ipsum
+        url: blogs/Heritage
       - image: pic05.jpg
         subtitle: Anything fast-paced
         title: Music
-        url: blogs/ipsum
+        url: blogs/Music
       - image: pic06.jpg
         subtitle: Data Analysis 
         title: Some R data
-        url: blogs/ipsum
+        url: blogs/Data
   two:
     buttonText: Get Started
     enable: yes
