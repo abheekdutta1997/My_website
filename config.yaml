@@ -92,7 +92,7 @@ params:
       - image: Sports.jpg
         subtitle: The best pass-time
         title: Sports
-        url: blogs/Sports
+        url: blogs/ipsum
       - image:
         subtitle: Heritage
         title: Nationality and Ancestry
@@ -100,7 +100,7 @@ params:
       - image: pic05.jpg
         subtitle: Anything fast-paced
         title: Music
-        url: blogs/Music
+        url: https://www.youtube.com/watch?v=WQntAabtNuE
       - image: pic06.jpg
         subtitle: Data Analysis 
         title: Some R data
