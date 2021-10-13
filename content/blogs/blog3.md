@@ -8,8 +8,9 @@ description: Nullam et orci eu lorem consequat tincidunt vivamus et sagittis mag
   sed magna lacinia magna pellentesque lorem ipsum dolor. Nullam et orci eu lorem
   consequat tincidunt. Vivamus et sagittis tempus.
 draft: false
-image: pic08.jpg
+image: NGF.jpg
 keywords: ""
 slug: tempus
-title: Tempus
+title: Niagara Falls
 ---
+During my Summer Holidays before I started my Undergraduate studies, I visited Toronto, Canada with my family and managed to see Niagara Falls. This was and is the most impressive thing I have ever seen in my life.

@@ -84,16 +84,16 @@ params:
       - image: lbs.jpg
         subtitle: An LBS student
         title: About me
-        url: blogs/About me
+        url: blogs/aliquam
       - image: pic02.jpg
         subtitle: Best thing I've seen in my life
         title: My Favourite Holiday Destination
-        url: blogs/Holidays
-      - image: pic03.jpg
+        url: blogs/tempus
+      - image: Sports.jpg
         subtitle: The best pass-time
         title: Sports
         url: blogs/Sports
-      - image: pic04.jpg
+      - image:
         subtitle: Heritage
         title: Nationality and Ancestry
         url: blogs/Heritage
@@ -104,7 +104,7 @@ params:
       - image: pic06.jpg
         subtitle: Data Analysis 
         title: Some R data
-        url: blogs/Data
+        url: blogs/magna
   two:
     buttonText: Get Started
     enable: yes
