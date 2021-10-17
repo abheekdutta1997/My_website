@@ -106,8 +106,8 @@ params:
         title: Some R data
         url: blogs/magna
   two:
-    buttonText: Get Started
-    enable: yes
+    #buttonText: 
+    enable: no
     subtitle: My name is Abheek and I read the Masters in Financial Analysis at LBS. I am originally from the UK and like to play sports, travel and listen to music in my spare time. Feel free to open any tabs to get a clearer picture on myself.
     title: A short Introduction
-    url: blogs
+    #url: blogs
