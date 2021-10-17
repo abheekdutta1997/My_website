@@ -93,10 +93,10 @@ params:
         subtitle: The best pass-time
         title: Sports
         url: blogs/ipsum
-      - image:
+      - image: volunteer.jpg
         subtitle: An initiative that I am involved in
         title: Volunteering
-        url: blogs/Heritage
+        url: https://www.theaccessproject.org.uk/
       - image: music.jpg
         subtitle: Anything fast-paced
         title: Music
