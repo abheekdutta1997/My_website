@@ -94,8 +94,8 @@ params:
         title: Sports
         url: blogs/ipsum
       - image:
-        subtitle: Heritage
-        title: Nationality and Ancestry
+        subtitle: An initiative that I am involved in
+        title: Volunteering
         url: blogs/Heritage
       - image: music.jpg
         subtitle: Anything fast-paced
