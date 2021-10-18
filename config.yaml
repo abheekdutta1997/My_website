@@ -42,21 +42,21 @@ params:
         text: 'Design: '
         url: https://www.html5up.net
     social:
-      - icon: fa-twitter
-        label: Twitter
-        url: https://www.twitter.com
+      - icon: 
+        label: 
+        url: 
       - icon: fa-facebook
         label: Facebook
-        url: https://www.facebook.com
+        url: https://www.facebook.com/abheek.dutta.5
       - icon: fa-instagram
         label: Instagram
-        url: https://www.instagram.com
+        url: https://www.instagram.com/abheekdutta/
       - icon: fa-github
         label: GitHub
-        url: https://www.github.com
+        url: https://github.com/abheekdutta1997
       - icon: fa-linkedin
         label: LinkedIn
-        url: https://www.linkedin.com
+        url: https://www.linkedin.com/in/abheek-dutta-81936115a/
   image: ''
   name: Your name
   navigation:
