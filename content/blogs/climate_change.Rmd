@@ -1,0 +1,449 @@
+---
+title: "Session 4: Homework 2"
+author: "B15: Abheek Dutta, Côme de Germay, Hanrui Wang, Johnny Choi, Ming Sutaruksanon, Qin Zhizhen, Samuel Fuchs"
+date: "Oct 3, 2021 "
+output:
+  html_document:
+    theme: flatly
+    highlight: zenburn
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+    code_folding: show
+---
+
+```{r, setup, include=FALSE}
+knitr::opts_chunk$set(
+  message = FALSE, 
+  warning = FALSE, 
+  tidy=FALSE,     # display code as typed
+  size="small")   # slightly smaller font for code
+options(digits = 3)
+
+# default figure size
+knitr::opts_chunk$set(
+  fig.width=6.75, 
+  fig.height=6.75,
+  fig.align = "center"
+)
+```
+
+
+```{r load-libraries, include=FALSE}
+library(tidyverse)  # Load ggplot2, dplyr, and all the other tidyverse packages
+library(mosaic)
+library(ggthemes)
+library(lubridate)
+library(here)
+library(skimr)
+library(janitor)
+library(httr)
+library(readxl)
+library(vroom)
+library(infer)
+library(data.table)
+library(wbstats)
+library(countrycode)
+library(scales)
+library(rvest)
+library(tidyquant)
+```
+
+
+
+# Climate change and temperature anomalies 
+
+
+If we wanted to study climate change, we can find data on the *Combined Land-Surface Air and Sea-Surface Water Temperature Anomalies* in the Northern Hemisphere at [NASA's Goddard Institute for Space Studies](https://data.giss.nasa.gov/gistemp). The [tabular data of temperature anomalies can be found here](https://data.giss.nasa.gov/gistemp/tabledata_v4/NH.Ts+dSST.txt)
+
+To define temperature anomalies you need to have a reference, or base, period which NASA clearly states that it is the period between 1951-1980.
+
+Run the code below to load the file:
+
+```{r weather_data, cache=TRUE}
+
+weather <- 
+  read_csv("https://data.giss.nasa.gov/gistemp/tabledata_v4/NH.Ts+dSST.csv", 
+           skip = 1, 
+           na = "***")
+
+```
+
+Notice that, when using this function, we added two options: `skip` and `na`.
+
+1. The `skip=1` option is there as the real data table only starts in Row 2, so we need to skip one row. 
+1. `na = "***"` option informs R how missing observations in the spreadsheet are coded. When looking at the spreadsheet, you can see that missing data is coded as "***". It is best to specify this here, as otherwise some of the data is not recognized as numeric data.
+
+Once the data is loaded, notice that there is a object titled `weather` in the `Environment` panel. If you cannot see the panel (usually on the top-right), go to `Tools` > `Global Options` > `Pane Layout` and tick the checkbox next to `Environment`. Click on the `weather` object, and the dataframe will pop up on a seperate tab. Inspect the dataframe.
+
+For each month and year, the dataframe shows the deviation of temperature from the normal (expected). Further the dataframe is in wide format. 
+
+You have two objectives in this section:
+
+1. Select the year and the twelve month variables from the `weather` dataset. We do not need the others (J-D, D-N, DJF, etc.) for this assignment. Hint: use `select()` function.
+
+2. Convert the dataframe from wide to 'long' format. Hint: use `gather()` or `pivot_longer()` function. Name the new dataframe as `tidyweather`, name the variable containing the name of the month as `month`, and the temperature deviation values as `delta`.
+
+
+```{r tidyweather}
+tidyweather <- weather %>% 
+  select(c(Year, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec)) # extract year and month
+
+tidyweather <- tidyweather %>% 
+  pivot_longer(cols =2:13,names_to = "month",values_to = "delta") # convert the dataframe to long format 
+```
+
+Inspect your dataframe. It should have three variables now, one each for 
+
+1. year, 
+1. month, and 
+1. delta, or temperature deviation.
+
+## Plotting Information
+
+Let us plot the data using a time-series scatter plot, and add a trendline. To do that, we first need to create a new variable called `date` in order to ensure that the `delta` values are plot chronologically. 
+
+
+> In the following chunk of code, I used the  argument, which does not run a chunk of code; I did so that you can knit the document before tidying the data and creating a new dataframe `tidyweather`. When you actually want to run this code and knit your document, you must delete ``, **not just here but in all chunks were `` appears.**
+
+
+```{r scatter_plot}
+# convert date format
+tidyweather <- tidyweather %>%
+  mutate(date = ymd(paste(as.character(Year), month, "1"))) %>% 
+  mutate(Month = month(date),
+         year = year(date))
+
+# plot the graph
+ggplot(tidyweather, aes(x=date, y = delta))+
+  geom_point()+
+  geom_smooth(color="red") +
+  theme_bw() +
+  labs (
+    title = "Weather Anomalies"
+  ) +
+  NULL
+
+```
+
+Is the effect of increasing temperature more pronounced in some months? Use `facet_wrap()` to produce a seperate scatter plot for each month, again with a smoothing line. Your chart should human-readable labels; that is, each month should be labeled "Jan", "Feb", "Mar" (full or abbreviated month names are fine), not `1`, `2`, `3`. 
+
+```{r facet_wrap, echo=FALSE}
+
+# plot the facet
+
+p <- tidyweather %>% 
+  mutate(month = factor(month, levels = month.abb)) %>%
+  arrange(month) %>%
+  ggplot(aes(y=delta, x=year)) +
+  geom_point() 
+
+
+p + facet_wrap(~month, nrow=4) +
+  geom_smooth(se=F)+
+  theme_bw()+
+  theme(legend.position = "none")+
+  theme_bw()+
+  labs(
+    title = "Evolution of the temperatures each month",
+    subtitle = "Scatterplot",
+    x = "Year",
+    y = "Temperature delta"
+  ) + 
+  NULL
+```
+--------  comment --------
+We can notice that the temperature delta is significantly bigger in January, February and March than the rest of the months.
+
+
+It is sometimes useful to group data into different time periods to study historical data. For example, we often refer to decades such as 1970s, 1980s, 1990s etc. to refer to a period of time. NASA calcuialtes a temperature anomaly, as difference form the base periof of 1951-1980. The code below creates a new data frame called `comparison` that groups data in five time periods: 1881-1920, 1921-1950, 1951-1980, 1981-2010 and 2011-present. 
+
+We remove data before 1800 and before using `filter`. Then, we use the `mutate` function to create a new variable `interval` which contains information on which period each observation belongs to. We can assign the different periods using `case_when()`.
+
+
+```{r intervals}
+
+comparison <- tidyweather %>% 
+  filter(Year>= 1881) %>%     #remove years prior to 1881
+  #create new variable 'interval', and assign values based on criteria below:
+  mutate(interval = case_when(
+    Year %in% c(1881:1920) ~ "1881-1920",
+    Year %in% c(1921:1950) ~ "1921-1950",
+    Year %in% c(1951:1980) ~ "1951-1980",
+    Year %in% c(1981:2010) ~ "1981-2010",
+    TRUE ~ "2011-present"
+  ))
+```
+
+Inspect the `comparison` dataframe by clicking on it in the `Environment` pane.
+
+Now that we have the `interval` variable, we can create a density plot to study the distribution of monthly deviations (`delta`), grouped by the different time periods we are interested in. Set `fill` to `interval` to group and colour the data by different time periods.
+
+```{r density_plot}
+ggplot(comparison, aes(x=delta, fill=interval))+
+  geom_density(alpha=0.2) +   #density plot with tranparency set to 20%
+  theme_bw() +                #theme
+  labs (
+    title = "Density Plot for Monthly Temperature Anomalies",
+    y     = "Density"         #changing y-axis label to sentence case
+  )
+
+```
+
+So far, we have been working with monthly anomalies. However, we might be interested in average annual anomalies. We can do this by using `group_by()` and `summarise()`, followed by a scatter plot to display the result. 
+
+```{r averaging}
+
+#creating yearly averages
+average_annual_anomaly <- tidyweather %>% 
+  group_by(year) %>%   #grouping data by Year
+  
+# creating summaries for mean delta 
+# use `na.rm=TRUE` to eliminate NA (not available) values 
+  summarise(annual_average_delta=mean(delta, na.rm=TRUE)) 
+
+#plotting the data:
+ggplot(average_annual_anomaly, aes(x=year, y= annual_average_delta))+
+  geom_point()+
+  
+  #Fit the best fit line, using LOESS method
+  geom_smooth() +
+  
+  #change to theme_bw() to have white background + black frame around plot
+  theme_bw() +
+  labs (
+    title = "Average Yearly Anomaly",
+    y     = "Average Annual Delta"
+  )                         
+
+
+```
+
+
+## Confidence Interval for `delta`
+
+[NASA points out on their website](https://earthobservatory.nasa.gov/world-of-change/decadaltemp.php) that 
+
+> A one-degree global change is significant because it takes a vast amount of heat to warm all the oceans, atmosphere, and land by that much. In the past, a one- to two-degree drop was all it took to plunge the Earth into the Little Ice Age.
+
+Your task is to construct a confidence interval for the average annual delta since 2011, both using a formula and using a bootstrap simulation with the `infer` package. Recall that the dataframe `comparison` has already grouped temperature anomalies according to time intervals; we are only interested in what is happening  between 2011-present.
+
+```{r, calculate_CI_using_formula}
+formula_ci <- comparison %>% 
+  # choose the interval 2011-present
+  # what dplyr verb will you use? 
+  filter(interval=='2011-present') %>% 
+  # calculate summary statistics for temperature deviation (delta) 
+  # calculate mean, SD, count, SE, lower/upper 95% CI
+  # what dplyr verb will you use? 
+  summarise(average_delta=mean(delta, na.rm=TRUE), 
+              sd_average=sd(delta, na.rm=TRUE), 
+              count = n(),
+              SE_delta=sd_average/sqrt(n()),
+              t_critical = qt(0.975, n() - 1 ),
+              lower = average_delta - t_critical * SE_delta,
+              upper = average_delta + t_critical * SE_delta)
+
+#print out formula_CI
+formula_ci
+```
+
+
+```{r, calculate_CI_using_bootstrap}
+
+# use the infer package to construct a 95% CI for delta
+calculate_CI_using_bootstrap <- comparison %>% 
+  filter(interval=='2011-present') %>% 
+  drop_na() %>% 
+  infer::specify(response=delta) %>%
+ 
+  # Generate bootstrap samples
+  infer::generate(reps = 1000, type = "bootstrap") %>%
+  
+  # Calculate mean of each bootstrap sample
+  infer::calculate(stat = "mean")
+
+calculate_CI_using_bootstrap %>% 
+  visualise()
+```
+
+> What is the data showing us? Please type your answer after (and outside!) this blockquote. You have to explain what you have done, and the interpretation of the result. One paragraph max, please!
+
+First, in order to extract data that we are interested in, we use filter function to draw the data from 2011 to present. Next, we specify the variable that we are interested in which is delta by using infer::specify(response = delta). Then, we generate a bunch of bootstrap sample with rep = 1000. After that, we computed the mean by using infer::calculate(stat = "mean") and then visualize it to produce the graph.
+
+This is the distribution of delta temperature for 2011 to present.It is the normal distribution. On the average, the annual temperature change by 1.06 degree from 2011 to present.We are 95% confident that the interval between 1.01 and 1.11 captured the true mean value.According to the NASA, this 1 degree increase of temperature could have a significant impact on the global climate. 
+
+# Global warming and political views (GSS)
+
+[A 2010 Pew Research poll](https://www.pewresearch.org/2010/10/27/wide-partisan-divide-over-global-warming/) asked 1,306 Americans, "From what you've read and heard, is there solid evidence that the average temperature on earth has been getting warmer over the past few decades, or not?"
+
+
+In this exercise we analyze whether there are any differences between the proportion of people who believe the earth is getting warmer and their political ideology. As usual, from the **survey sample data**, we will use the proportions to estimate values of *population parameters*. The file has 2253 observations on the following 2 variables:
+
+- `party_or_ideology`: a factor (categorical) variable with levels Conservative Republican, Liberal Democrat, Mod/Cons Democrat, Mod/Lib Republican
+- `response` : whether the respondent believes the earth is warming or not, or Don't know/ refuse to answer
+
+```{r, read_global_warming_pew_data}
+global_warming_pew <- read_csv(here::here("data", "global_warming_pew.csv"))
+```
+
+You will also notice that many responses should not be taken into consideration, like "No Answer", "Don't Know", "Not applicable", "Refused to Answer".
+
+
+```{r}
+global_warming_pew %>% 
+  count(party_or_ideology, response)
+
+```
+
+We will be constructing three 95% confidence intervals to estimate population parameters, for the % who believe that **Earth is warming**, accoridng to their party or ideology. You can create the CIs using the formulas by hand, or use `prop.test()`-- just rememebr to exclude the Dont know / refuse to answer!
+
+```{r, cache=TRUE}
+
+# create the CIs for Conservative Republican party
+global_warming_pew_Conservative<- global_warming_pew %>% 
+    count(party_or_ideology, response) %>% 
+    filter(response!="Don't know / refuse to answer" & party_or_ideology=="Conservative Republican") 
+
+
+global_warming_pew_Conservative
+prop.test(as.integer(global_warming_pew_Conservative[1,3]), as.integer(sum(global_warming_pew_Conservative[,3])))
+```
+
+```{r, cache=TRUE}
+# create the CIs for Liberal Democrat party
+
+global_warming_pew_Liberal<- global_warming_pew %>% 
+    count(party_or_ideology, response) %>% 
+    filter(response!="Don't know / refuse to answer" & party_or_ideology=="Liberal Democrat") 
+
+global_warming_pew_Liberal
+prop.test(as.integer(global_warming_pew_Liberal[1,3]), as.integer(sum(global_warming_pew_Liberal[,3])))
+```
+
+```{r, cache=TRUE}
+# create the CIs for Mod/Lib Republican party
+
+global_warming_pew_Mod_LibRepublican<- global_warming_pew %>% 
+    count(party_or_ideology, response) %>% 
+    filter(response!="Don't know / refuse to answer" & party_or_ideology=="Mod/Lib Republican") 
+
+global_warming_pew_Mod_LibRepublican
+prop.test(as.integer(global_warming_pew_Mod_LibRepublican[1,3]), as.integer(sum(global_warming_pew_Mod_LibRepublican[,3])))
+```
+```{r, cache=TRUE}
+# create the CIs for Mod/Cons Democrat party
+
+global_warming_pew_Mod_ConsDemocrat<- global_warming_pew %>% 
+    count(party_or_ideology, response) %>% 
+    filter(response!="Don't know / refuse to answer" & party_or_ideology=="Mod/Cons Democrat") 
+
+global_warming_pew_Mod_ConsDemocrat
+prop.test(as.integer(global_warming_pew_Mod_ConsDemocrat[1,3]), as.integer(sum(global_warming_pew_Mod_ConsDemocrat[,3])))
+```
+
+Does it appear that whether or not a respondent believes the earth is warming is independent of their party ideology? You may want to 
+
+For conservative party, if we conducts many identical polls, about 95% of the intervals produced will capture the true proportion of respondent who are not believe in global warming. 
+
+
+For liberal party, if we conduct many identical polls, about 95% of the intervals produced will capture the true proportion of respondent who are believe in global warming. 
+
+For Mod/Lib party, if we conduct many identical polls, about 95% of the intervals produced will capture the true proportion of respondent who are reluctant to believe in global warming. 
+
+For Mod/Cons party, if we conduct many identical polls, about 95% of the intervals produced will capture the true proportion of respondent who are not believe in global warming. 
+
+In conclusion, the intervals computed above are in line with the parties' policies. Indeed, conservative are less concerned about global warning than liberals, Mod/Lib, and Mod/Cons. 
+
+
+
+You may want to read on [The challenging politics of climate change](https://www.brookings.edu/research/the-challenging-politics-of-climate-change/)
+
+# Biden's Approval Margins
+
+As we saw in class, fivethirtyeight.com has detailed data on [all polls that track the president's approval ](https://projects.fivethirtyeight.com/biden-approval-ratings)
+
+```{r, cache=TRUE}
+# Import approval polls data directly off fivethirtyeight website
+approval_polllist <- read_csv('https://projects.fivethirtyeight.com/biden-approval-data/approval_polllist.csv') 
+
+# Use `lubridate` to fix dates, as they are given as characters.
+approval_polllist_clean <- approval_polllist %>% 
+  mutate(modeldate= mdy(modeldate)) %>% 
+  mutate(startdate= mdy(startdate)) %>% 
+  mutate(enddate= mdy(enddate)) %>% 
+  mutate(createddate= mdy(createddate))
+
+glimpse(approval_polllist_clean)
+
+```
+
+## Create a plot
+
+What I would like you to do is to calculate the average net approval rate (approve- disapprove) for each week since he got into office. I want you plot the net approval, along with its 95% confidence interval. There are various dates given for each poll, please use `enddate`, i.e., the date the poll ended.
+
+```{r 1}
+
+#creating weekly averages
+weekly_data <- approval_polllist_clean %>%
+  mutate(Net = approve - disapprove) %>%
+  group_by(timeline = week(enddate)) %>%
+  summarise(avg_weekly = mean(Net, na.rm = TRUE),
+            sd_weekly=sd(Net, na.rm = TRUE),
+            count_weekly = n(), 
+            SE_weekly=sd_weekly/sqrt(count_weekly),
+            t_critical = qt(0.975, count_weekly - 1 ),
+            lower = avg_weekly - (t_critical * SE_weekly),
+            upper = avg_weekly + (t_critical * SE_weekly))
+
+weekly_data
+
+#plot 
+ggplot(weekly_data, 
+       aes(x=timeline, y=avg_weekly))+
+  expand_limits(x=c(4,39), y=c(-15,20))+
+  scale_x_continuous(breaks=c(13,26))+
+  scale_y_continuous()+
+  geom_point(color = "pink")+
+  geom_line(color = "pink") +
+  geom_smooth(method="loess", fill = "Transparent", se = FALSE) +
+  geom_ribbon(aes(ymin = lower, 
+                  ymax = upper), 
+              alpha = 0.1,
+              linetype = "solid",
+              color = "red") +
+  geom_hline(yintercept=0,color = "orange", size=1) +
+  
+#change to theme_bw() to have white background + black frame around plot
+  labs (
+    title = "Estimated Approval Margin (approve - disapprove) for Joe Biden",
+    subtitle = "Weekly average of all polls",
+    y     = "Average Approval Margin (Approve - Disapprove)",
+    x = "Week of the year"
+  )+
+  NULL
+
+
+```
+
+
+
+Also, please add an orange line at zero. Your plot should look like this:
+
+```{r trump_margins, echo=FALSE, out.width="100%"}
+
+knitr::include_graphics(here::here("images", "biden_approval_margin.png"), error = FALSE)
+```
+
+## Compare Confidence Intervals
+
+Compare the confidence intervals for `week 3` and `week 25`. Can you explain what's going on? One paragraph would be enough.
+
+Based on given graph, the confidence interval in week 3 is much larger than week 25 due to low participants (low sample size), low consistency and unstable long-term opinion which result to misleading of average approval margin. However, in week 25, the data keep collecting, the trend will revert to the mean, resulting to lower average approval margin meaning Biden is less popular. Margin of error is narrower and the number of participants is higher, so that it's more reliable. 
+
+
+
+
+
+
+
