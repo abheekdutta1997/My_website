@@ -96,7 +96,7 @@ params:
       - image: volunteer.jpg
         subtitle: An initiative that I am involved in
         title: Volunteering
-        url: blogs/
+        url: https://www.theaccessproject.org.uk/?gclid=CjwKCAjw_L6LBhBbEiwA4c46usieBw7nNbTrqaHPssbUzn8t9WWhJMSfzU6NcKLXw70bnT39jc_FwRoCdIsQAvD_BwE
       - image: music.jpg
         subtitle: Anything fast-paced
         title: Music

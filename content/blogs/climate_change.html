@@ -1,5 +1,5 @@
 ---
-title: "Session 4: Homework 2"
+title: "Global Warming Analysis"
 author: "B15: Abheek Dutta, Côme de Germay, Hanrui Wang, Johnny Choi, Ming Sutaruksanon, Qin Zhizhen, Samuel Fuchs"
 date: "Oct 3, 2021 "
 output:
@@ -168,13 +168,4 @@ calculate_CI_using_bootstrap %&gt;%
 <p>First, in order to extract data that we are interested in, we use filter function to draw the data from 2011 to present. Next, we specify the variable that we are interested in which is delta by using infer::specify(response = delta). Then, we generate a bunch of bootstrap sample with rep = 1000. After that, we computed the mean by using infer::calculate(stat = “mean”) and then visualize it to produce the graph.</p>
 <p>This is the distribution of delta temperature for 2011 to present.It is the normal distribution. On the average, the annual temperature change by 1.06 degree from 2011 to present.We are 95% confident that the interval between 1.01 and 1.11 captured the true mean value.According to the NASA, this 1 degree increase of temperature could have a significant impact on the global climate.</p>
 </div>
-</div>
-<div id="global-warming-and-political-views-gss" class="section level1">
-<h1>Global warming and political views (GSS)</h1>
-<p><a href="https://www.pewresearch.org/2010/10/27/wide-partisan-divide-over-global-warming/">A 2010 Pew Research poll</a> asked 1,306 Americans, “From what you’ve read and heard, is there solid evidence that the average temperature on earth has been getting warmer over the past few decades, or not?”</p>
-<p>In this exercise we analyze whether there are any differences between the proportion of people who believe the earth is getting warmer and their political ideology. As usual, from the <strong>survey sample data</strong>, we will use the proportions to estimate values of <em>population parameters</em>. The file has 2253 observations on the following 2 variables:</p>
-<ul>
-<li><code>party_or_ideology</code>: a factor (categorical) variable with levels Conservative Republican, Liberal Democrat, Mod/Cons Democrat, Mod/Lib Republican</li>
-<li><code>response</code> : whether the respondent believes the earth is warming or not, or Don’t know/ refuse to answer</li>
-</ul>
 </div>
