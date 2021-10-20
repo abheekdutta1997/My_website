@@ -1,7 +1,7 @@
 baseURL: https://abheek-dutta.netlify.app/
 languageCode: en-us
 title: Portfolio Website
-theme: forty
+theme: Forty
 googleAnalytics: ''
 disqusShortname: ''
 params:
@@ -76,8 +76,8 @@ params:
       - name: Elements
         url: elements.html
     menu: Menu
-    subtitle: By HTML5 Up
-    title: Forty
+    subtitle: Abheek Dutta
+    title: Home
   tiles:
     enable: yes
     showcase:
@@ -101,9 +101,9 @@ params:
         subtitle: Anything fast-paced
         title: Music
         url: https://www.youtube.com/watch?v=WQntAabtNuE
-      - image: pic06.jpg
-        subtitle: Data Analysis 
-        title: Some R data
+      - image: gw.jpg
+        subtitle: Using R to extrapolate trends
+        title: Global Warming analysis 
         url: blogs/climate_change
   two:
     #buttonText: 
